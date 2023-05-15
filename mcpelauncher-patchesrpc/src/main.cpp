@@ -9,6 +9,7 @@
 #include <mutex>
 
 void (*mcpelauncher_preinithook)(const char*sym, void*val, void **orig);
+const char* (*_ZNK4Json5Value9asCStringEv)(void *t);
 void (*mcpelauncher_log)(int level, const char* tag, const char* text);
 
 void*_ZNK11AppPlatform12isLANAllowedEv;
@@ -65,11 +66,30 @@ extern "C" void __attribute__ ((visibility ("default"))) mod_preinit() {
     mcpelauncher_preinithook = (decltype(mcpelauncher_preinithook)) dlsym(h, "mcpelauncher_preinithook");
     mcpelauncher_log = (decltype(mcpelauncher_log)) dlsym(h, "mcpelauncher_log");
 
+    mcpelauncher_preinithook("_ZNK4Json5Value9asCStringEv", (void*)+[](void *t) -> const char* {
+        const char* ttt = _ZNK4Json5Value9asCStringEv(t);
+        if (strstr(ttt, "hivebedrock.network:19132")) { // if (strstr(ttt, "localhost:29132")) {
+            mcpelauncher_log(0, "ServerConnection", "The Hive");
+        } else if (strstr(ttt, "cubecraft.net:19132")) {
+            mcpelauncher_log(0, "ServerConnection", "Cubecraft Games");
+        } else if (strstr(ttt, "play.inpvp.net:19132")) {
+            mcpelauncher_log(0, "ServerConnection", "Mineville");
+        } else if (strstr(ttt, "mco.lbsg.net:19132")) {
+            mcpelauncher_log(0, "ServerConnection", "Lifeboat Network");
+        } else if (strstr(ttt, "mco.mineplex.com:19132")) {
+            mcpelauncher_log(0, "ServerConnection", "Mineplex");
+        } else if (strstr(ttt, "play.galaxite.net:19132")) {
+            mcpelauncher_log(0, "ServerConnection", "Galaxite");
+        } else if (strstr(ttt, "play.pixelparadise.gg:19132")) {
+            mcpelauncher_log(0, "ServerConnection", "Pixel Paradise");
+        }
+        return ttt;
+    }, (void**)&_ZNK4Json5Value9asCStringEv);
+
     mcpelauncher_preinithook("getaddrinfo", (void*)+[](const char *node, const char *service, const addrinfo *hints, addrinfo **res) -> int {
         if (node) {
-            std::string server = "";
             if (lastWasIp) {
-                if (strcmp(node, "geo.hivebedrock.network") == 0) {
+                if (strstr(node, "hivebedrock.network") != NULL) {
                     patchId++;
                     std::thread([=]() {
                         int patchIdOld = patchId;
@@ -82,38 +102,6 @@ extern "C" void __attribute__ ((visibility ("default"))) mod_preinit() {
                 }
                 if ((isValidIp4((char*)node) == 0) && (std::string(node).find(":") == std::string::npos)) {
                     lastWasIp = false;
-                }
-                if (strcmp(node, "play.inpvp.net") == 0) {
-                    server = "Mineville";
-                } else if (strcmp(node, "mco.lbsg.net") == 0) {
-                    server = "Lifeboat Network";
-                } else if (strcmp(node, "mco.mineplex.com") == 0) {
-                    server = "Mineplex";
-                } else if (strcmp(node, "mco.cubecraft.net") == 0) {
-                    server = "Cubecraft Games";
-                } else if (strcmp(node, "geo.hivebedrock.network") == 0) { //} else if (strcmp(node, "localhost") == 0) {
-                    server = "The Hive";
-                } else if (strcmp(node, "play.galaxite.net") == 0) {
-                    server = "Galaxite";
-                } else if (strcmp(node, "play.pixelparadise.gg") == 0) {
-                    server = "Pixel Paradise";
-                }
-
-            } else {
-                if (strcmp(node, "play.inpvp.net") == 0) {
-                    server = "Server / realm / friend's world";
-                } else if (strcmp(node, "mco.lbsg.net") == 0) {
-                    server = "Server / realm / friend's world";
-                } else if (strcmp(node, "mco.mineplex.com") == 0) {
-                    server = "Server / realm / friend's world";
-                } else if (strcmp(node, "mco.cubecraft.net") == 0) {
-                    server = "Server / realm / friend's world";
-                } else if (strcmp(node, "geo.hivebedrock.network") == 0) {
-                    server = "Server / realm / friend's world";
-                } else if (strcmp(node, "play.galaxite.net") == 0) {
-                    server = "Server / realm / friend's world";
-                } else if (strcmp(node, "play.pixelparadise.gg") == 0) {
-                    server = "Server / realm / friend's world";
                 }
             }
             if (strcmp(node, "play.inpvp.net") == 0) {
@@ -131,9 +119,6 @@ extern "C" void __attribute__ ((visibility ("default"))) mod_preinit() {
             }
             if ((isValidIp4((char*)node) != 0) || std::string(node).find(":") != std::string::npos) {
                 lastWasIp = true;
-            }
-            if (!server.empty()) {
-                mcpelauncher_log(0, "ServerConnection", server.c_str());
             }
         }
         return getaddrinfo(node, service, hints, res);
