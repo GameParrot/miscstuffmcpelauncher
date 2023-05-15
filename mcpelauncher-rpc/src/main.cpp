@@ -57,6 +57,8 @@ extern "C" void __attribute__ ((visibility ("default"))) mod_preinit() {
             mcpelauncher_log(0, "ServerConnection", "Pixel Paradise");
         } else if (strstr(ttt, "zeqa.net:19132")) {
             mcpelauncher_log(0, "ServerConnection", "Zeqa");
+        } else if (strstr(ttt, "zeqa.net:1000")) {
+            mcpelauncher_log(0, "ServerConnection", "Zeqa");
         } else if (strstr(ttt, (zeqaNa + ":1000").c_str())) {
             mcpelauncher_log(0, "ServerConnection", "Zeqa");
         } else if (strstr(ttt, (zeqaEu + ":1000").c_str())) {
