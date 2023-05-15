@@ -7,6 +7,8 @@
 #include <unistd.h>
 #include <netdb.h>
 #include <mutex>
+#include <netinet/in.h>
+#include <arpa/inet.h>
 
 void (*mcpelauncher_preinithook)(const char*sym, void*val, void **orig);
 const char* (*_ZNK4Json5Value9asCStringEv)(void *t);
@@ -14,6 +16,21 @@ void (*mcpelauncher_log)(int level, const char* tag, const char* text);
 
 void*_ZNK11AppPlatform12isLANAllowedEv;
 void*__ZNK11AppPlatform12isLANAllowedEv;
+std::string zeqaNa = "";
+std::string zeqaEu = "";
+std::string zeqaAs = "";
+std::string zeqaAu = "";
+
+const char* getHostIp(const char *host) {
+    hostent * record = gethostbyname(host);
+	if(record == NULL)
+	{
+        return "NXDOMAIN";
+	}
+	in_addr * address = (in_addr * )record->h_addr;
+	return inet_ntoa(* address);
+}
+
 int defaultBp = 8;
 int bp = defaultBp;
 int patchId = 0;
@@ -62,6 +79,10 @@ int isValidIp4 (char *str) {
 }
 extern "C" void __attribute__ ((visibility ("default"))) mod_preinit() {
     auto h = dlopen("libmcpelauncher_mod.so", 0);
+    zeqaNa = getHostIp("na.zeqa.net");
+    zeqaEu = getHostIp("eu.zeqa.net");
+    zeqaAs = getHostIp("as.zeqa.net");
+    zeqaAu = getHostIp("au.zeqa.net");
 
     mcpelauncher_preinithook = (decltype(mcpelauncher_preinithook)) dlsym(h, "mcpelauncher_preinithook");
     mcpelauncher_log = (decltype(mcpelauncher_log)) dlsym(h, "mcpelauncher_log");
@@ -82,6 +103,20 @@ extern "C" void __attribute__ ((visibility ("default"))) mod_preinit() {
             mcpelauncher_log(0, "ServerConnection", "Galaxite");
         } else if (strstr(ttt, "play.pixelparadise.gg:19132")) {
             mcpelauncher_log(0, "ServerConnection", "Pixel Paradise");
+        } else if (strstr(ttt, "zeqa.net:19132")) {
+            mcpelauncher_log(0, "ServerConnection", "Zeqa");
+        } else if (strstr(ttt, "zeqa.net:1000")) {
+            mcpelauncher_log(0, "ServerConnection", "Zeqa");
+        } else if (strstr(ttt, (zeqaNa + ":1000").c_str())) {
+            mcpelauncher_log(0, "ServerConnection", "Zeqa");
+        } else if (strstr(ttt, (zeqaEu + ":1000").c_str())) {
+            mcpelauncher_log(0, "ServerConnection", "Zeqa");
+        } else if (strstr(ttt, (zeqaAs + ":1000").c_str())) {
+            mcpelauncher_log(0, "ServerConnection", "Zeqa");
+        } else if (strstr(ttt, (zeqaAu + ":1000").c_str())) {
+            mcpelauncher_log(0, "ServerConnection", "Zeqa");
+        } else if (strstr(ttt, "play.nethergames.org:19132")) {
+            mcpelauncher_log(0, "ServerConnection", "NetherGames");
         }
         return ttt;
     }, (void**)&_ZNK4Json5Value9asCStringEv);
