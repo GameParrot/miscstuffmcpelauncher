@@ -69,6 +69,8 @@ extern "C" void __attribute__ ((visibility ("default"))) mod_preinit() {
             mcpelauncher_log(0, "ServerConnection", "Zeqa");
         } else if (strstr(ttt, "play.nethergames.org:19132")) {
             mcpelauncher_log(0, "ServerConnection", "NetherGames");
+        } else if (strstr(ttt, "play.hyperlandsmc.net:19132")) {
+            mcpelauncher_log(0, "ServerConnection", "HyperLands");
         }
         
         return ttt;
