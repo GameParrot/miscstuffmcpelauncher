@@ -12,8 +12,8 @@ void (*mcpelauncher_preinithook)(const char*sym, void*val, void **orig);
 const char* (*_ZNK4Json5Value9asCStringEv)(void *t);
 void (*mcpelauncher_log)(int level, const char* tag, const char* text);
 
-void*_ZNK11AppPlatform16isNetworkAllowedEv;
-void*__ZNK11AppPlatform16isNetworkAllowedEv;
+void*_ZNK11AppPlatform30requiresLiveGoldForMultiplayerEv;
+void*__ZNK11AppPlatform30requiresLiveGoldForMultiplayerEv;
 std::string zeqaNa = "";
 std::string zeqaEu = "";
 std::string zeqaAs = "";
@@ -76,7 +76,7 @@ extern "C" void __attribute__ ((visibility ("default"))) mod_preinit() {
         return ttt;
     }, (void**)&_ZNK4Json5Value9asCStringEv);
 
-    __ZNK11AppPlatform16isNetworkAllowedEv = (void*)+[](void*** t) -> bool {
+    __ZNK11AppPlatform30requiresLiveGoldForMultiplayerEv = (void*)+[](void*** t) -> bool {
         auto mc = dlopen("libminecraftpe.so", 0);
         
         auto appPlat = (void**)dlsym(mc, "_ZTV11AppPlatform");
@@ -91,15 +91,15 @@ extern "C" void __attribute__ ((visibility ("default"))) mod_preinit() {
                     mcpelauncher_log(0, "MainActivity", (on ? "setKeepScreenOnFlag: 1" : "setKeepScreenOnFlag: 0"));
                 };
             }
-            if(othervt[i] == __ZNK11AppPlatform16isNetworkAllowedEv) {
-                othervt[i] = _ZNK11AppPlatform16isNetworkAllowedEv;
+            if(othervt[i] == __ZNK11AppPlatform30requiresLiveGoldForMultiplayerEv) {
+                othervt[i] = _ZNK11AppPlatform30requiresLiveGoldForMultiplayerEv;
             }
         }
         
         dlclose(mc);
-        return true;
+        return false;
     };
-    mcpelauncher_preinithook("_ZNK11AppPlatform16isNetworkAllowedEv", __ZNK11AppPlatform16isNetworkAllowedEv, &_ZNK11AppPlatform16isNetworkAllowedEv);
+    mcpelauncher_preinithook("_ZNK11AppPlatform30requiresLiveGoldForMultiplayerEv", __ZNK11AppPlatform30requiresLiveGoldForMultiplayerEv, &_ZNK11AppPlatform30requiresLiveGoldForMultiplayerEv);
     dlclose(h);
 }
 
